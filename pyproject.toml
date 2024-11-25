@@ -1,0 +1,51 @@
+[project]
+
+name = "bibtool"
+version = '0.0.1'
+authors = [
+    {name= 'Gabriel Lepetit-Aimon', email= 'gabriel.lepetit-aimon@polymtl.ca'},
+]
+description = """Bibliography scripting tool."""
+readme = 'README.md'
+
+requires-python = '>=3.10'
+dependencies = [
+    'numpy'
+]
+
+[project.optional-dependencies]
+
+[project.urls]
+Homepage = 'https://github.com/gabriel-lepetitaimon/bibtool'
+Source = 'https://github.com/gabriel-lepetitaimon/bibtool'
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.ruff]
+# Enable flake8-bugbear (`B`) rules.
+select = ["E", "F", "B", "I"]
+line-length = 120
+
+# Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B"]
+target-version = "py310"
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["E402", "F401"]
+"**.ipynb" = ["E402", "F401"]
+
+[tool.black]
+line-length = 120
+
+[tool.ruff.isort]
+known-first-party = ["fundus_vessels_toolkit"]
+section-order = ["future", "standard-library", "third-party", "steered_cnn", "first-party", "local-folder"]
+
+[tool.ruff.isort.sections]
+"steered_cnn" = ["steered_cnn"]
+
+[tool.pytest.ini_options]
+addopts          = "--doctest-modules src/fundus_vessels_toolkit --doctest-ignore-import-errors --doctest-report ndiff"
+testpaths        = ["tests"]
+doctest_optionflags = ["NORMALIZE_WHITESPACE", "ELLIPSIS"]
