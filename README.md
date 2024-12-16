@@ -28,7 +28,7 @@ Some features also requires a local installation of [Zotero](https://www.zotero.
 ## Usage
 
 ### I. Listing every papers of a research field
-The module ``bibtool.search_papers`` gather the necessary function to automatically search bibliographic repository.
+The module ``bibtool.search_papers`` provide functions to automatically search bibliographic repository.
 
 First create a ``LiteratureSearch`` object to gather the results of the search. Then scan repositery with an appropriate
 ``SearchQuery`` object.
@@ -81,7 +81,7 @@ doi, wait for the page to load, trigger Zotero Connector hotkey, wait for the pa
 next doi. You can't use your graphical desktop while the script is running.
 
 ### III. Automatic filtering of the papers based on their title and abstract using a LLM.
-No specific functions are provided in this package for this task but you can check the example script [``filter_abstract.py``](examples/filter_abstract.py) which uses a LLM to filter papers based on their abstract.
+No specific functions are provided in this package for this task but you can check the example script [``filter_abstracts.py``](examples/filter_abstracts.py) which uses a LLM to filter papers based on their abstract.
 
 In particular the script uses ``ZoteroLibrary`` to access the doi, titles and abstract of the papers previously downloaded:
 ```python
