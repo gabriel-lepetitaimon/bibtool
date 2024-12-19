@@ -35,11 +35,6 @@ def analyse_abstracts(zlib: ZoteroLibrary, output_csv: str | Path) -> None:
     articles = zlib.fetch_item_fields(["doi", "title", "abstract"]).dropna()
     articles.drop_duplicates(subset="title", inplace=True)
 
-    # === Only consider articles with PDFs ===
-    local_paths = zlib.list_local_path(prefer="pdf")
-    pdf_paths = local_paths[local_paths["content_type"] == "pdf"]["path"]
-    articles = articles[articles.index.isin(pdf_paths.index)]
-
     # === Uses doi as index (rather than Zotero key) ===
     articles.set_index("doi", inplace=True)
 
@@ -54,7 +49,7 @@ def analyse_abstracts(zlib: ZoteroLibrary, output_csv: str | Path) -> None:
         articles["fundus_vessel_classification"] = articles_csv["fundus_vessel_classification"]
 
     # === Create LLM pipeline ===
-    process_article = create_llm_pipeline()
+    pipe, gen_args = create_llm_pipeline()
 
     # === Analyze abstracts ===
     try:
@@ -64,7 +59,7 @@ def analyse_abstracts(zlib: ZoteroLibrary, output_csv: str | Path) -> None:
                     progress.update(advance=1)
                     continue
                 try:
-                    result = process_article(art["title"], art["abstract"])
+                    result = process_article(art["title"], art["abstract"], pipe, gen_args)
                     for k, v in result.items():
                         articles.loc[i, k] = v
                     progress.update(advance=1)
