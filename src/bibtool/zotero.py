@@ -104,8 +104,10 @@ class ZoteroLibrary:
     def download_papers(
         self,
         dois: Iterable[str],
-        zotero_connector_hotkey: str = "ctrl+period",
-        timeout=25,
+        zotero_connector_hotkey: str = ("ctrl", "."),
+        max_hotkey_retry: int = 2,
+        initial_wait: float = 4,
+        timeout=15,
     ):
         """Download the full text of the specified DOIs.
 
@@ -121,6 +123,8 @@ class ZoteroLibrary:
 
         """
         import subprocess
+
+        import pyautogui
 
         try:
             size = len(dois)
@@ -142,15 +146,23 @@ class ZoteroLibrary:
 
                 subprocess.call(["firefox", "https://doi.org/" + doi])
                 # Initial wait time to let the page load
-                time.sleep(3)
+                time.sleep(initial_wait)
 
-                # Wait for the Zotero Connector to be ready (up to 15 seconds)
-                t0 = time.time()
-                while (time.time() - t0) < 15:
-                    subprocess.call(["xdotool", "key", zotero_connector_hotkey])
-                    time.sleep(1.5)
-                    if self.has_doi(doi):
-                        break
+                retry = 0
+                while retry <= max_hotkey_retry:
+                    # Send hotkey to Zotero Connector
+                    pyautogui.hotkey(*zotero_connector_hotkey)
+                    retry += 1
+
+                    # Wait for the DOI to appear in Zotero database
+                    for _ in range(retry + 3):
+                        time.sleep(1)
+                        if self.has_doi(doi):
+                            break
+                    else:
+                        # After 3+retry seconds, send the hotkey again
+                        continue
+                    break
                 else:
                     # If the page can't load or Zotero can't register the item, skip to the next DOI
                     failed = True
@@ -169,7 +181,9 @@ class ZoteroLibrary:
                     progress.update(total=progress.total - 1)
                 else:
                     progress.update(advance=1)
-                subprocess.call(["xdotool", "key", "ctrl+w"])
+
+                # Send an hotkey to close the current tab
+                pyautogui.hotkey("ctrl", "w")
                 time.sleep(0.5)
 
     # =========================================================================

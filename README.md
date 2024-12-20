@@ -56,8 +56,8 @@ Downloading the full-text and even the abstracts of the papers is not trivial fo
 The only reliable solution I found until now requires an auto-clicker to automate the "manual" download of papers with 
 Zotero Connector. It requires a local installation of Zotero and the Zotero Connector extension in your browser properly
 configured to be triggered by a given hotkey. 
-It also requires a way to trigger hotkeys from python. The current solution uses ``xdotool`` and therefore only works on
-Linux. I might implement a more general solution involving PyAutoGUI in the future.
+It also requires the ``pyautogui``. See [PyAutoGui Installation Page](https://pyautogui.readthedocs.io/en/latest/install.html) 
+for more information on its installation for your OS.
 
 1. Create a Zotero Library (and optionally a collection) where all the papers will be downloaded. I strongly advice 
 to disable the automatic sync of the library so the papers are not uploaded to your Zotero cloud. Make sure the library
